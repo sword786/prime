@@ -1,20 +1,18 @@
 <!DOCTYPE html>
 <html>
   <head>
-     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TG-@cric_stream</title>
-     <link rel="shortcut icon" type="image/x-icon" href="Cric stream Favicon.jpg">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TG @cric_stream</title>
+    <link rel="shortcut icon" type="image/x-icon" href="Cric stream Favicon.jpg">
     <!-- Shaka Player UI compiled library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.12.5/shaka-player.ui.min.js"></script>
-    <!-- Shaka Player UI compiled library default CSS -->
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.12.5/controls.min.css">
-    <!-- Chromecast SDK (optional for Chromecast support) -->
+    <script src="shaka-player.ui.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="controls.min.css">
     <style>
       #live-label {
         position: absolute;
-        top: 5px;
-        left: 5px;
-        font-size: 10px; /* Default font size for larger screens */
+        top: 10px;
+        left: 10px;
+        font-size: 10px;
         color: white;
         background-color: rgba(0, 0, 0, 0.4);
         padding: 4px 8px;
@@ -29,7 +27,7 @@
         font-weight: bold;
       }
 
-      /* For screens larger than 768px (laptops, desktops) */
+       /* For screens larger than 768px (laptops, desktops) */
       @media (min-width: 768px) {
         #live-label {
           font-size: 8px;
@@ -42,12 +40,12 @@
         #live-label {
           font-size: 5px;
           padding: 2px 4px;
-          top: 3px;
-          left: 3px;
+          top: 5px;
+          left: 5px;
         }
       }
 
-      /* Popup styles */
+       /* Popup styles */
         .popup {
             position: fixed;
             top: 50%;
@@ -108,177 +106,63 @@
                 opacity: 1;
             }
         }
-
-      .neon-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding-top: 5px;
-            padding-bottom:25px;
-            margin: 10px;
-            margin-top: 25px;
-            background-color: #2f2f2f;
-            border-radius: 10px;
-            box-shadow: 0 0 10px #00ff99;
-            transition: all 0.3s ease-in-out;
-            animation: neonBorder 2s infinite alternate;
-        }
-
-        .neon-container h1 {
-            color: #fff;
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-            letter-spacing: 2px;
-        }
-
-        .neon-container a {
-            color: #00ff99;
-            font-size: 1.5rem;
-            text-decoration: none;
-            font-weight: bold;
-            border: 2px solid #00ff99;
-            padding: 10px 20px;
-            border-radius: 5px;
-            transition: all 0.3s ease-in-out;
-        }
-
-        .neon-container a:hover {
-            background-color: #00ff99;
-            color: #121212;
-            box-shadow: 0 0 20px #00ff99, 0 0 40px #00ff99;
-        }
-
-        /* Neon Border Animation */
-        @keyframes neonBorder {
-            0% {
-                border-color: #00ff99;
-            }
-            25% {
-                border-color: #ff007f;
-            }
-            50% {
-                border-color: #007fff;
-            }
-            75% {
-                border-color: #ffbf00;
-            }
-            100% {
-                border-color: #00ff99;
-            }
-        }
-
-       
-
-        /* Responsive Styles */
-        @media (max-width: 768px) {
-            .neon-container h1 {
-                font-size: 2rem;
-            }
-
-            .neon-container a {
-                font-size: 1.2rem;
-                padding: 8px 16px;
-            }
-        }
-   
     </style>
   </head>
   <body>
     <div data-shaka-player-container style="max-width:100%">
-      <video autoplay data-shaka-player id="video" style="width:100%;height:100%; background-color:black;"></video>
+      <video autoplay data-shaka-player id="video" style="width:100%;height:100%; background-color:black;" poster=""></video>
       <div id="live-label">
-        <center><a href="https://t.me/+ESR7kTRkAHI1NTI1">CRIC <br> STREAM</a></center>
+        <center><a href="https://t.me/cric_stream">CRIC <br> STREAM</a></center>
       </div>
     </div>
 
     <script>
-      const manifestUri = 'https://aba5sdmaaaaaaaamjyr2xiy4rbicb.otte.live.cf.ww.aiv-cdn.net/pdx-nitro/live/clients/dash/enc/zqhtvqjquq/out/v1/190f1d69a3d5467f8fb7d9df4339bc49/cenc.mpd';
-
       async function init() {
+        const defaultUrl = "https://cors-anywhere.ammoapps.com/https://dfwlive-v1-c1p3-sponsored.akamaized.net/Content/HLS.cps/Live/channel(WILLHD-3291.dfw.1080)/index.m3u8";
+        const urlParams = new URLSearchParams(window.location.search);
+        const manifestUri = urlParams.get('url') || defaultUrl;
+
+        console.log("Attempting to load URL:", manifestUri);
+
         const video = document.getElementById('video');
         const ui = video['ui'];
         const controls = ui.getControls();
         const player = controls.getPlayer();
 
-        // DRM Configuration with ClearKey
-        const clearKeyConfig = {
-          'cb8daf414566aa17d06f8294f3f3b444': '89d58908a57d70ef87bf16c9b5821ca2'
-        };
-
-        // Shaka Player UI Configuration (Remove progress and add "Live" label)
         const config = {
-          'controlPanelElements': ['play_pause', 'spacer', 'mute', 'quality','language','picture_in_picture', 'fullscreen']
+          controlPanelElements: ['play_pause', 'spacer', 'mute', 'quality', 'picture_in_picture', 'fullscreen'],
         };
 
         ui.configure(config);
 
-        // Configure DRM
         player.configure({
-          drm: {
-            clearKeys: clearKeyConfig
-          }
+          streaming: {
+            useNativeHlsOnSafari: false,
+          },
         });
 
-        // Attach player and UI to the window to make it easy to access in the JS console.
-        window.player = player;
-        window.ui = ui;
+        player.addEventListener('error', (errorEvent) => {
+          console.error("Player Error:", errorEvent.detail);
+          alert("An error occurred while playing the video. Check the console for details.");
+        });
 
-        // Listen for error events.
-        player.addEventListener('error', onPlayerErrorEvent);
-        controls.addEventListener('error', onUIErrorEvent);
-
-        // Show "Live" label when the stream is live
-        const liveLabel = document.getElementById('live-label');
-        liveLabel.style.display = 'block';
-
-        // Try to load the manifest.
         try {
           await player.load(manifestUri);
-          console.log('The video has now been loaded!');
+          console.log("The video has now been loaded!");
+          document.getElementById('live-label').style.display = 'block';
         } catch (error) {
-          onPlayerError(error);
+          console.error("Error loading video:", error);
+          alert("Failed to load the video. Please check the URL or CORS proxy.");
         }
-
-        // Detect when controls are visible and show/hide the live label
-        const controlPanel = document.querySelector('.shaka-controls');
-        
-        controlPanel.addEventListener('mouseenter', () => {
-          liveLabel.style.display = 'block';  // Show the "Live" label when controls are visible
-        });
-
-        controlPanel.addEventListener('mouseleave', () => {
-          liveLabel.style.display = 'none';  // Hide the "Live" label when controls are hidden
-        });
       }
 
-      function onPlayerErrorEvent(errorEvent) {
-        // Extract the shaka.util.Error object from the event.
-        onPlayerError(errorEvent.detail);
-      }
-
-      function onPlayerError(error) {
-        // Handle player error
-        console.error('Error code', error.code, 'object', error);
-      }
-
-      function onUIErrorEvent(errorEvent) {
-        // Extract the shaka.util.Error object from the event.
-        onPlayerError(errorEvent.detail);
-      }
-
-      function initFailed(errorEvent) {
-        console.error('Unable to load the UI library!');
-      }
-
-      // Listen to the custom shaka-ui-loaded event, to wait until the UI is loaded.
       document.addEventListener('shaka-ui-loaded', init);
-      document.addEventListener('shaka-ui-load-failed', initFailed);
-
-     
+      document.addEventListener('shaka-ui-load-failed', () => {
+        console.error("Shaka Player UI library failed to load.");
+      });
     </script>
 
-     <script>
+    <script>
         // Restrict iframe embedding
         if (window.top !== window.self) {
             window.addEventListener('DOMContentLoaded', function() {
@@ -315,12 +199,11 @@
         });
     </script>
     
-     <center>
-           <!-- BEGIN: Powered by Supercounters.com -->
-        <center><script type="text/javascript" src="//widget.supercounters.com/ssl/online_t.js"></script><script type="text/javascript">sc_online_t(1707487,"Users Online","170ddb");</script><br><noscript><a href="https://www.supercounters.com/">supercounters.com</a></noscript>
-        </center>
-        <!-- END: Powered by Supercounters.com -->
-
+    <center>
+            <script type="text/javascript" src="//widget.supercounters.com/ssl/online_t.js"></script>
+            <script type="text/javascript">sc_online_t(1703448, "Watching....", "#1d1d21");</script>
+            <br>
+            <noscript><a href="https://www.supercounters.com/"></a></noscript>
         </center>
 
         <div style="background-color: #0074d9; text-align: center; padding: 10px;">
@@ -329,15 +212,6 @@
             </a>
         </div>
     </div>
-
-
-     <div class="neon-container">
-        <div>
-            <h1>For Advertisement Contact Us!</h1>
-            <a href="https://t.me/asif4br" target="_blank">Click to Connect</a>
-        </div>
-    </div>
-
     
   </body>
 </html>
